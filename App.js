@@ -29,7 +29,7 @@ export default function App() {
     }
     setVastaus(result);
     const text = `${number1} ${operator} ${number2} = ${result}`;
-    setData([...data, text]);
+    setData([...data, text]); // tai toisin päin text ja ...data jos haluaa uusimman päällimmäiseksi
   }
   
   setluku1('');
@@ -50,8 +50,12 @@ export default function App() {
 
        
           <View style={styles.button}>
+            <View>
             <Button onPress={() => calculate('+')} title="+" />
+            </View>
+            <View>
             <Button onPress={() => calculate('-')} title="-" />
+            </View>
           </View>
           <Text style={styles.heading}>History</Text>
           
@@ -84,8 +88,10 @@ const styles = StyleSheet.create({
     padding: 10,
     margin: 10,
     flexDirection: 'row',
-    justifyContent: 'space-evenly'     
+    justifyContent: 'space-evenly',
+    width: '30%'     
   },
+
   heading: {
     padding: 10,
   }
