@@ -7,7 +7,7 @@ export default function App() {
   const [luku1, setluku1] = useState('');
   const [luku2, setluku2] = useState('');
 
-  const [vastaus, setvastaus] = useState('');
+  const [vastaus, setVastaus] = useState('');
   const [data, setData] = useState([]);
 
   const initialFocus = useRef(null);
@@ -15,15 +15,23 @@ export default function App() {
   const calculate = operator => {
     const [number1, number2] = [Number(luku1), Number(luku2)];
   
-  switch (operator) {
-    case '+':
-      setvastaus(number1+number2);
-      break;
-
-    case '-':
-      setvastaus(number1-number2);
-      break;
+  if (isNaN(number1) || isNaN(number2)) {
+    setVastaus(0);
+  }else {
+    let result = 0;
+    switch (operator) {
+      case '+':
+        result = number1 + number2;
+        break;
+      case '-':
+        result = number1 - number2;
+        break;
+    }
+    setVastaus(result);
+    const text = `${number1} ${operator} ${number2} = ${result}`;
+    setData([...data, text]);
   }
+  
   setluku1('');
   setluku2('');
   initialFocus.current.focus();
@@ -32,23 +40,26 @@ export default function App() {
   return (
     <View style={styles.container}>
 
-      <Text>Result: {vastaus}</Text>
+      <Text style={styles.heading}>Result: {vastaus}</Text>
 
-      <TextInput style={styles.input} ref={initialFocus} keyboardType='numeric'  onChangeText={text => setluku1(text)} value={luku1}/>
-      <TextInput style={styles.input} keyboardType='numeric'  onChangeText={text => setluku2(text)} value={luku2}/>
-        <View style={styles.operators}>
+      <TextInput style={styles.input} ref={initialFocus} keyboardType='numeric' 
+       onChangeText={text => setluku1(text)} value={luku1}/>
+
+      <TextInput style={styles.input} keyboardType='numeric' 
+       onChangeText={text => setluku2(text)} value={luku2}/>
+
+       
           <View style={styles.button}>
             <Button onPress={() => calculate('+')} title="+" />
-            </View>
-            <View style={styles.button}>
             <Button onPress={() => calculate('-')} title="-" />
           </View>
-          <View>
-            <FlatList data={data} renderItem={({item}) => <Text>{item.key}</Text>}
-              keyExtractor={(item, index) => index.toString()} />
-          </View>
-        </View>
-      <StatusBar style="auto" />
+          <Text style={styles.heading}>History</Text>
+          
+            <FlatList data={data} 
+              renderItem={({item}) => {
+                return <Text>{item}</Text>
+              }}
+              keyExtractor={(item, index) => index} />     
     </View>
     
   );
@@ -60,19 +71,22 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     alignItems: 'center',
     justifyContent: 'center',
+    marginTop: 50
   },
   input : {
     width:200  , 
     borderColor: 'gray', 
-    borderWidth: 1
+    borderWidth: 1,
+    padding: 7,
   },
-  operators: {
-    flexDirection: 'row',
-    justifyContent: 'space-evenly',
-  },
+ 
   button : {
-    width: '10%',
-    margin: 10     
+    padding: 10,
+    margin: 10,
+    flexDirection: 'row',
+    justifyContent: 'space-evenly'     
   },
-
+  heading: {
+    padding: 10,
+  }
 });
